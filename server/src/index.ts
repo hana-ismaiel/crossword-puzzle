@@ -1,12 +1,20 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import session from "express-session";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { loadWords } from "./services/wordsLoader.js";
 import { createCrosswordRouter } from "./routes/crossword.js";
+import type { Grid } from "./types/crossword.js";
 
 dotenv.config();
+
+declare module "express-session" {
+  interface SessionData {
+    currentPuzzle?: Grid;
+  }
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -16,9 +24,22 @@ const PORT = process.env.PORT || 3002;
 
 app.use(cors());
 app.use(express.json());
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "dev-secret-change-later",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: false,
+      maxAge: 1000 * 60 * 60,
+    },
+  })
+);
 
 const wordsPath = join(__dirname, "data", "words.txt");
 const words = loadWords(wordsPath);
+
 
 app.use("/api/crossword", createCrosswordRouter(words));
 
