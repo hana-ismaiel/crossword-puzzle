@@ -4,13 +4,27 @@ import { CluesList } from "./components/CluesList";
 import "./App.css"
 
 function App() {
-  const { puzzle, cellStates, completedSlots, generateNewPuzzle, submitGuess } =
-    useCrosswordGame();
+  const {
+    puzzle,
+    cellStates,
+    completedSlots,
+    generateNewPuzzle,
+    submitGuess,
+    isGenerating
+  } = useCrosswordGame();
 
   return (
     <div className="app">
       <h1>Crossword</h1>
-      <button onClick={generateNewPuzzle}>Generate New Puzzle</button>
+      <button className="generate-button" onClick={generateNewPuzzle} disabled={isGenerating}>
+        {isGenerating ? (
+          <>
+            <span className="spinner" /> Generating...
+          </>
+        ) : (
+          "Generate New Puzzle"
+        )}
+      </button>
 
       {puzzle && (
         <div className="game-layout">

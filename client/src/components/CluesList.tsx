@@ -3,10 +3,9 @@ import type { UserWordSlot } from "../types/crossword";
 interface CluesListProps {
   slots: UserWordSlot[];
   completedSlots: Set<string>;
-  onClueClick: (slot: UserWordSlot) => void;
 }
 
-export function CluesList({ slots, completedSlots, onClueClick }: CluesListProps) {
+export function CluesList({ slots, completedSlots }: CluesListProps) {
   const acrossSlots = slots
     .filter((s) => s.direction === "across")
     .sort((a, b) => a.number - b.number);
@@ -26,7 +25,6 @@ export function CluesList({ slots, completedSlots, onClueClick }: CluesListProps
               <li
                 key={slot.number}
                 className={isComplete ? "clue-complete" : ""}
-                onClick={() => onClueClick(slot)}
               >
                 <strong>{slot.number}.</strong> {slot.clue}
               </li>

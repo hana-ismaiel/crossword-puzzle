@@ -1,3 +1,7 @@
+.app {
+  text-align: center;
+}
+
 .crossword-grid {
   display: inline-flex;
   flex-direction: column;
@@ -58,11 +62,13 @@
   display: flex;
   gap: 32px;
   align-items: flex-start;
+  justify-content: center;
 }
 
 .clues-list {
   display: flex;
   gap: 24px;
+  text-align: left;
 }
 
 .clues-column ul {
@@ -74,9 +80,55 @@
 .clues-column li {
   margin-bottom: 6px;
   font-size: 14px;
+  max-width: 340px;
 }
 
 .clue-complete {
   text-decoration: line-through;
   color: #999;
+}
+
+.spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #ccc;
+  border-top-color: #333;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.generate-button {
+  background-color: #4a90d9;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.generate-button:hover:not(:disabled) {
+  background-color: #3a7bc0;
+}
+
+.generate-button:disabled {
+  background-color: #a0bcd9;
+  opacity: 1;
+  cursor: not-allowed;
 }

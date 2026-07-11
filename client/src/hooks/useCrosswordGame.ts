@@ -20,9 +20,7 @@ function createEmptyCellStates(size: number): CellState[][] {
 export function useCrosswordGame() {
   const [puzzle, setPuzzle] = useState<PuzzleShape | null>(null);
   const [cellStates, setCellStates] = useState<CellState[][]>([]);
-  const [selectedSlot, setSelectedSlot] = useState<
-    { number: number; direction: "across" | "down" } | null
-  >(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const cellSlotMap = useMemo(() => {
     if (!puzzle) return {};
@@ -42,12 +40,17 @@ export function useCrosswordGame() {
   }, [puzzle, cellStates]);
 
   async function generateNewPuzzle() {
-    const response = await axios.get<PuzzleShape>(`${API_BASE}/generate`, {
-      withCredentials: true,
-    });
+    setIsGenerating(true);
+    try {
+      const response = await axios.get<PuzzleShape>(`${API_BASE}/generate`, {
+        withCredentials: true,
+      });
 
-    setPuzzle(response.data);
-    setCellStates(createEmptyCellStates(response.data.size));
+      setPuzzle(response.data);
+      setCellStates(createEmptyCellStates(response.data.size));
+    } finally {
+      setIsGenerating(false);
+    }
   }
 
   async function submitGuess(row: number, col: number, letter: string) {
@@ -88,7 +91,6 @@ export function useCrosswordGame() {
     completedSlots,
     generateNewPuzzle,
     submitGuess,
-    selectedSlot,
-    setSelectedSlot
+    isGenerating
   };
 }
