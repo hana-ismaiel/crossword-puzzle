@@ -4,6 +4,7 @@ const GRID_SIZE = 13;
 
 export class CrosswordGenerator {
   private words: string[];
+  private cellDirections: Set<Direction>[][] = [];
 
   constructor(words: string[]) {
     this.words = words;
@@ -11,6 +12,7 @@ export class CrosswordGenerator {
 
   generate(): Grid {
     const grid = this.createEmptyGrid();
+    this.cellDirections = this.createEmptyDirectionMap();
     const availableWords = this.shuffle([...this.words]);
 
     this.placeFirstWord(grid, availableWords);
@@ -49,14 +51,24 @@ export class CrosswordGenerator {
     return { size: GRID_SIZE, cells, slots: [] };
   }
 
+  private createEmptyDirectionMap(): Set<Direction>[][] {
+    const map: Set<Direction>[][] = [];
+    for (let r = 0; r < GRID_SIZE; r++) {
+      const row: Set<Direction>[] = [];
+      for (let c = 0; c < GRID_SIZE; c++) {
+        row.push(new Set());
+      }
+      map.push(row);
+    }
+    return map;
+  }
+
   private shuffle(arr: string[]): string[] {
     const shuffled = [...arr];
-
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-
     return shuffled;
   }
 
@@ -68,7 +80,6 @@ export class CrosswordGenerator {
 
     let row: number;
     let col: number;
-    // Randomly pick a starting cell for the first word
     if (direction === "across") {
       row = Math.floor(Math.random() * GRID_SIZE);
       col = Math.floor(Math.random() * (GRID_SIZE - word.length + 1));
@@ -137,6 +148,8 @@ export class CrosswordGenerator {
       const cell = grid.cells[row][col];
       const isCrossingCell = cell.solutionLetter !== null;
 
+      if (this.cellDirections[row][col].has(direction)) return false;
+
       if (isCrossingCell) {
         if (cell.solutionLetter !== word[i]) return false;
       } else {
@@ -164,6 +177,7 @@ export class CrosswordGenerator {
       const r = direction === "down" ? row + i : row;
       const c = direction === "across" ? col + i : col;
       grid.cells[r][c].solutionLetter = word[i];
+      this.cellDirections[r][c].add(direction);
     }
 
     const slot: WordSlot = {

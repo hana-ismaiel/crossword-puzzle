@@ -1,9 +1,10 @@
 import { useCrosswordGame } from "./hooks/useCrosswordGame";
 import { CrosswordGrid } from "./components/CrosswordGrid";
-import "./App.css";
+import { CluesList } from "./components/CluesList";
+import "./App.css"
 
 function App() {
-  const { puzzle, cellStates, generateNewPuzzle, submitGuess } =
+  const { puzzle, cellStates, completedSlots, generateNewPuzzle, submitGuess } =
     useCrosswordGame();
 
   return (
@@ -12,11 +13,14 @@ function App() {
       <button onClick={generateNewPuzzle}>Generate New Puzzle</button>
 
       {puzzle && (
-        <CrosswordGrid
-          puzzle={puzzle}
-          cellStates={cellStates}
-          onGuess={submitGuess}
-        />
+        <div className="game-layout">
+          <CrosswordGrid
+            puzzle={puzzle}
+            cellStates={cellStates}
+            onGuess={submitGuess}
+          />
+          <CluesList slots={puzzle.slots} completedSlots={completedSlots} />
+        </div>
       )}
     </div>
   );

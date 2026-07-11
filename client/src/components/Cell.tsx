@@ -15,6 +15,8 @@ export function Cell({ isBlocked, number, value, status, onChange }: CellProps) 
 
   const statusClass =
     status === "correct" ? "cell-correct" : status === "incorrect" ? "cell-incorrect" : "";
+  
+  const isLocked = status === "correct";
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const letter = e.target.value.slice(-1);
@@ -29,6 +31,7 @@ export function Cell({ isBlocked, number, value, status, onChange }: CellProps) 
         maxLength={1}
         value={value}
         onChange={handleChange}
+        readOnly={isLocked}
       />
     </div>
   );

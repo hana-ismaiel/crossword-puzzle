@@ -20,6 +20,9 @@ function createEmptyCellStates(size: number): CellState[][] {
 export function useCrosswordGame() {
   const [puzzle, setPuzzle] = useState<PuzzleShape | null>(null);
   const [cellStates, setCellStates] = useState<CellState[][]>([]);
+  const [selectedSlot, setSelectedSlot] = useState<
+    { number: number; direction: "across" | "down" } | null
+  >(null);
 
   const cellSlotMap = useMemo(() => {
     if (!puzzle) return {};
@@ -85,5 +88,7 @@ export function useCrosswordGame() {
     completedSlots,
     generateNewPuzzle,
     submitGuess,
+    selectedSlot,
+    setSelectedSlot
   };
 }

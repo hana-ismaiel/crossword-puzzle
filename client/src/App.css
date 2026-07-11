@@ -53,3 +53,30 @@
 .cell-incorrect .cell-input {
   color: #d32f2f;
 }
+
+.game-layout {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.clues-list {
+  display: flex;
+  gap: 24px;
+}
+
+.clues-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.clues-column li {
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.clue-complete {
+  text-decoration: line-through;
+  color: #999;
+}
