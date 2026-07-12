@@ -39,7 +39,7 @@ const PORT = process.env.PORT || 3002;
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://crossword-puzzle-rho-jade.vercel.app/",
+  "https://crossword-puzzle-rho-jade.vercel.app",
 ];
 
 app.use(
