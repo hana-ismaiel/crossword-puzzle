@@ -50,6 +50,10 @@
   outline-offset: -2px;
 }
 
+.cell-input[readonly] {
+  cursor: pointer;
+}
+
 .cell-correct .cell-input {
   color: #000;
 }
@@ -131,4 +135,20 @@ button:disabled {
   background-color: #a0bcd9;
   opacity: 1;
   cursor: not-allowed;
+}
+
+.puzzle-complete-badge {
+  background-color: #2e7d32;
+  color: white;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.error-message {
+  color: #d32f2f;
+  font-size: 14px;
+  margin-top: -8px;
+  margin-bottom: 16px;
 }

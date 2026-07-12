@@ -21,6 +21,7 @@ export function useCrosswordGame() {
   const [puzzle, setPuzzle] = useState<PuzzleShape | null>(null);
   const [cellStates, setCellStates] = useState<CellState[][]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const cellSlotMap = useMemo(() => {
     if (!puzzle) return {};
@@ -41,6 +42,7 @@ export function useCrosswordGame() {
 
   async function generateNewPuzzle() {
     setIsGenerating(true);
+    setError(null);
     try {
       const response = await axios.get<PuzzleShape>(`${API_BASE}/generate`, {
         withCredentials: true,
@@ -48,6 +50,9 @@ export function useCrosswordGame() {
 
       setPuzzle(response.data);
       setCellStates(createEmptyCellStates(response.data.size));
+    } catch (err) {
+      console.log(err);
+      setError("Couldn't generate a puzzle right now. Please try again later.");
     } finally {
       setIsGenerating(false);
     }
@@ -84,6 +89,22 @@ export function useCrosswordGame() {
     });
   }
 
+  const isPuzzleComplete = useMemo(() => {
+    if (!puzzle) return false;
+
+    for (let r = 0; r < puzzle.size; r++) {
+      for (let c = 0; c < puzzle.size; c++) {
+        const cell = puzzle.cells[r]?.[c];
+        if (!cell || cell.isBlocked) continue;
+
+        const state = cellStates[r]?.[c];
+        if (state?.status !== "correct") return false;
+      }
+    }
+
+    return true;
+  }, [puzzle, cellStates]);
+
   return {
     puzzle,
     cellStates,
@@ -91,6 +112,8 @@ export function useCrosswordGame() {
     completedSlots,
     generateNewPuzzle,
     submitGuess,
-    isGenerating
+    isGenerating,
+    isPuzzleComplete,
+    error
   };
 }

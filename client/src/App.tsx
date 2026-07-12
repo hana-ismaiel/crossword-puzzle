@@ -10,7 +10,9 @@ function App() {
     completedSlots,
     generateNewPuzzle,
     submitGuess,
-    isGenerating
+    isGenerating,
+    isPuzzleComplete,
+    error
   } = useCrosswordGame();
 
   return (
@@ -22,17 +24,24 @@ function App() {
             <span className="spinner" /> Generating...
           </>
         ) : (
-          "Generate New Puzzle"
+          "Start New Puzzle"
         )}
       </button>
 
+      {error && <p className="error-message">{error}</p>}
+
       {puzzle && (
         <div className="game-layout">
-          <CrosswordGrid
-            puzzle={puzzle}
-            cellStates={cellStates}
-            onGuess={submitGuess}
-          />
+          <div>
+            {isPuzzleComplete && (
+              <div className="puzzle-complete-badge">✓ Puzzle Complete!</div>
+            )}
+            <CrosswordGrid
+              puzzle={puzzle}
+              cellStates={cellStates}
+              onGuess={submitGuess}
+            />
+          </div>
           <CluesList slots={puzzle.slots} completedSlots={completedSlots} />
         </div>
       )}
