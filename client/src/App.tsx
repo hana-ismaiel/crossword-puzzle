@@ -28,6 +28,12 @@ function App() {
         )}
       </button>
 
+      {isGenerating && (
+        <p className="generating-message">
+          Please be patient, this may take a moment...
+        </p>
+      )}
+
       {error && <p className="error-message">{error}</p>}
 
       {puzzle && (

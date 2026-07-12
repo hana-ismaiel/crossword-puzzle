@@ -152,3 +152,10 @@ button:disabled {
   margin-top: -8px;
   margin-bottom: 16px;
 }
+
+.generating-message {
+  font-size: 13px;
+  color: #666;
+  margin-top: -8px;
+  margin-bottom: 16px;
+}
