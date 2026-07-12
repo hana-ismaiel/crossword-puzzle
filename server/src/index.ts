@@ -7,6 +7,8 @@ import { dirname, join } from "node:path";
 import { loadWords } from "./services/wordsLoader.js";
 import { createCrosswordRouter } from "./routes/crossword.js";
 import type { Grid } from "./types/crossword.js";
+import pg from "pg";
+import connectPgSimple from "connect-pg-simple";
 
 dotenv.config();
 
@@ -15,6 +17,19 @@ declare module "express-session" {
     currentPuzzle?: Grid;
   }
 }
+
+const PgSession = connectPgSimple(session);
+
+const pgPool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
+
+pgPool.on("error", (err) => {
+  console.error("Unexpected error on idle Postgres client", err);
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -31,6 +46,10 @@ app.use(
 app.use(express.json());
 app.use(
   session({
+    store: new PgSession({
+      pool: pgPool,
+      createTableIfMissing: true,
+    }),
     secret: process.env.SESSION_SECRET || "dev-secret-change-later",
     resave: false,
     saveUninitialized: false,
