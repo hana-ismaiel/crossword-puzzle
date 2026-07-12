@@ -3,7 +3,7 @@ import axios from "axios";
 import type { PuzzleShape, CellState } from "../types/crossword";
 import { buildCellSlotMap, isSlotComplete } from "../utils/crosswordUtils";
 
-const API_BASE = "http://localhost:3002/api/crossword";
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 function createEmptyCellStates(size: number): CellState[][] {
   const states: CellState[][] = [];
