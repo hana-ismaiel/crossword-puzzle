@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import axios from "axios";
 import type { PuzzleShape, CellState } from "../types/crossword";
 import { buildCellSlotMap, isSlotComplete } from "../utils/crosswordUtils";
@@ -17,11 +17,49 @@ function createEmptyCellStates(size: number): CellState[][] {
   return states;
 }
 
+function applyProgress(
+  size: number,
+  progress: Record<string, { letter: string; status: "correct" | "incorrect" }>
+): CellState[][] {
+  const states = createEmptyCellStates(size);
+
+  for (const key in progress) {
+    const [rowStr, colStr] = key.split(",");
+    const row = Number(rowStr);
+    const col = Number(colStr);
+    const entry = progress[key];
+
+    const targetRow = states[row];
+    if (targetRow && entry) {
+      targetRow[col] = { value: entry.letter, status: entry.status };
+    }
+  }
+
+  return states;
+}
+
 export function useCrosswordGame() {
   const [puzzle, setPuzzle] = useState<PuzzleShape | null>(null);
   const [cellStates, setCellStates] = useState<CellState[][]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function restoreSession() {
+      try {
+        const response = await axios.get(`${API_BASE}/puzzle`, {
+          withCredentials: true,
+        });
+
+        setPuzzle(response.data);
+        setCellStates(applyProgress(response.data.size, response.data.progress));
+      } catch {
+        // No active session puzzle
+      }
+    }
+
+    restoreSession();
+  }, []);
 
   const cellSlotMap = useMemo(() => {
     if (!puzzle) return {};
@@ -77,6 +115,8 @@ export function useCrosswordGame() {
       status: "correct" | "incorrect";
     }>(`${API_BASE}/check`, { row, col, letter }, { withCredentials: true });
 
+    if (letter === "") return;
+    
     const { status } = response.data;
 
     setCellStates((prev) => {

@@ -15,6 +15,9 @@ dotenv.config();
 declare module "express-session" {
   interface SessionData {
     currentPuzzle?: Grid;
+    playerProgress?: {
+      [key: string]: { letter: string; status: "correct" | "incorrect" };
+    };
   }
 }
 
