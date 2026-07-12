@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "tsc && mkdir -p dist/data && cp src/data/words.txt dist/data/words.txt",
     "start": "node dist/index.js"
   },
   "keywords": [],
